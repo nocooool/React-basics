@@ -15,9 +15,8 @@ export class Service{
         this.bucket = new Storage(this.client);
     }
 
-    async createPost({title, slug, content, featuredImage, status, userID}){
+    async createPost({title, slug, content, featuredImage, status, userId}){
         try {
-            //.createDocument [documentid, collectionid, id, {args/ data}]
             return await this.databases.createDocument(
                 config.databse_id,
                 config.collection_id,
@@ -25,15 +24,13 @@ export class Service{
                 {
                     title,
                     content,
-                    slug,
                     featuredImage,
                     status,
-                    userID
+                    userId,
                 }
             )
-            
         } catch (error) {
-            console.log("appwrite config :: createPost :: error", error);
+            console.log("Appwrite serive :: createPost :: error", error);
         }
     }
 
@@ -47,25 +44,27 @@ export class Service{
                     title,
                     content,
                     featuredImage,
-                    status
+                    status,
+
                 }
             )
-
         } catch (error) {
-            console.log("appwrite config :: updatePost :: error", error);
+            console.log("Appwrite serive :: updatePost :: error", error);
         }
     }
 
     async deletePost(slug){
         try {
-            return await this.databases.deleteDocument(
+            await this.databases.deleteDocument(
                 config.databse_id,
                 config.collection_id,
                 slug
+            
             )
+            return true
         } catch (error) {
-            console.log("appwrite config :: deletePost :: error", error);
-            return false;
+            console.log("Appwrite serive :: deletePost :: error", error);
+            return false
         }
     }
 
@@ -75,11 +74,11 @@ export class Service{
                 config.databse_id,
                 config.collection_id,
                 slug
+            
             )
-
         } catch (error) {
-            console.log("appwrite config :: getPost :: error", error);
-            return false; 
+            console.log("Appwrite serive :: getPost :: error", error);
+            return false
         }
     }
 
@@ -88,17 +87,18 @@ export class Service{
             return await this.databases.listDocuments(
                 config.databse_id,
                 config.collection_id,
-                queries
+                queries,
+                
 
             )
-            
         } catch (error) {
-            console.log("appwrite config :: getPost :: error", error);
-            return false;
+            console.log("Appwrite serive :: getPosts :: error", error);
+            return false
         }
     }
 
-    //file upload services/methods
+    // file upload service
+
     async uploadFile(file){
         try {
             return await this.bucket.createFile(
@@ -106,34 +106,33 @@ export class Service{
                 ID.unique(),
                 file
             )
-            
         } catch (error) {
-            console.log("appwrite config :: uploadFile :: error", error);
-            return false;
+            console.log("Appwrite serive :: uploadFile :: error", error);
+            return false
         }
     }
 
-    async deleteFile(fileID){
+    async deleteFile(fileId){
         try {
-            return await this.bucket.deleteFile(
+            await this.bucket.deleteFile(
                 config.bucket_id,
-                fileID
+                fileId
             )
-
+            return true
         } catch (error) {
-            console.log("appwrite config :: deleteFile :: error", error);
-            return false;
+            console.log("Appwrite serive :: deleteFile :: error", error);
+            return false
         }
     }
 
-    getFilePreview(fileID){
+    getFilePreview(fileId){
         return this.bucket.getFilePreview(
             config.bucket_id,
-            fileID
+            fileId
         )
     }
-
 }
+
 
 const service = new Service()
 export default service
